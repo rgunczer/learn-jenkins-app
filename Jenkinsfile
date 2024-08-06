@@ -49,7 +49,7 @@ pipeline {
                     reuseNode true
                 }
             }
-            steps {
+            steps {
                 sh '''
                     echo 'E2E stage'
                     npm i serve
