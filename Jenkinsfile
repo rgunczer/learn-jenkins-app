@@ -52,8 +52,8 @@ pipeline {
             steps {
                 sh '''
                     echo 'E2E stage'
-                    npm i -g serve
-                    serve -s build
+                    npm i serve
+                    node_modules/.bin/serve -s build
                     npx playwright test
                 '''
             }
