@@ -41,7 +41,24 @@ pipeline {
             }
             steps {
                 sh '''
-                    amazon-linux-extras install docker
+                    # 1. Update packages and install curl + tar
+                    yum install -y curl tar
+
+                    # 2. Download the official static binary archive
+                    curl -fsSL https://docker.com -o docker.tgz
+
+                    # 3. Extract ONLY the docker client binary
+                    tar -xzf docker.tgz --strip-components=1 docker/docker
+
+                    # 4. Move it to your local bin directory (Sudo isn't needed; you are already root)
+                    mv docker /usr/local/bin/
+
+                    # 5. Clean up the downloaded archive
+                    rm docker.tgz
+
+                    # 6. Verify the client works
+                    docker --version
+
                     docker build -t myjenkinsapp .
                 '''
             }
