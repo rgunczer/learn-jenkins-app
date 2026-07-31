@@ -42,7 +42,7 @@ pipeline {
             steps {
                 sh '''
                     # 1. Update packages and install curl + tar
-                    yum install -y curl tar
+                    yum install -y tar
 
                     # 2. Download the official static binary archive
                     curl -fsSL https://docker.com -o docker.tgz
