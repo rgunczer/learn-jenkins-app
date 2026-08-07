@@ -75,6 +75,8 @@ pipeline {
                         # aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
                         aws s3 sync build s3://$AWS_S3_BUCKET
 
+                        sed -i "/s/#APP_NAME#/$REACT_APP_VERSION/g" aws/task-definition-prod.json
+
                         LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
                         echo $LATEST_TD_REVISION
 
