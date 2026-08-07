@@ -5,6 +5,7 @@ pipeline {
         REACT_APP_VERSION = "1.2.$BUILD_ID"
         APP_NAME = "learnjenkinsapp"
         AWS_DEFAULT_REGION = "us-east-1"
+        AWS_DOCKER_REGISTRY = "414012778050.dkr.ecr.us-east-1.amazonaws.com"
         AWS_ECS_CLUSTER = "learn-jenkins-app-cluster-prod"
         AWS_ECS_SERVICE_PROD = "LearnJenkinsApp-Service-Prod"
         AWS_ECS_TD_PROD = "LearnJenkinsApp-TaskDefinition-Prod"
@@ -41,12 +42,14 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                    # yum install -y docker
-                    docker --version
-
-                    docker build -t $APP_NAME:$REACT_APP_VERSION .
-                '''
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        # yum install -y docker
+                        docker --version
+                        docker build -t $AWS_DOCKER_REGISTRY/$APP_NAME:$REACT_APP_VERSION .
+                        aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_DOCKER_REGISTRY
+                    '''
+                }
             }
         }
 
